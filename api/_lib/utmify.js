@@ -56,7 +56,7 @@ function buildOrderPayload({ orderId, status, createdAt, approvedDate, customer,
     products: [
       {
         id: '1',
-        name: 'KIT ROTINA COMPLETA ANTIMANCHAS',
+        name: 'Kit Rotina Anti Melasma',
         planId: null,
         planName: null,
         quantity: 1,

@@ -459,6 +459,20 @@ button.action.primary.tocart.cro-pulse,
     background: #1a1a1a;
 }
 
+/* ─── 10. TÍTULO DO PRODUTO — levemente maior que o padrão do tema ── */
+.page-title-wrapper .page-title,
+.page-title-wrapper .page-title .base {
+    font-size: 22px !important;
+    line-height: 1.25 !important;
+}
+
+@media (min-width: 768px) {
+    .page-title-wrapper .page-title,
+    .page-title-wrapper .page-title .base {
+        font-size: 29px !important;
+    }
+}
+
 
 
 
