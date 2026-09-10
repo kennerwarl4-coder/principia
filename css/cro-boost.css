@@ -1,0 +1,465 @@
+/*
+ * cro-boost.css — Principia Skincare CRO Layer
+ * Paleta on-brand: #000 / #fff / #f5f5f5 / #1a1a1a / #555
+ * Design minimalista, elegante — sem cores estridentes.
+ */
+
+/* ─── 1. CTA PULSE / GLOW — Sutil, on-brand ──────────────────────── */
+button.action.primary.tocart.cro-pulse,
+#product-addtocart-button.cro-pulse {
+    animation: cro-glow-pulse 2.5s ease-in-out infinite !important;
+    position: relative;
+}
+
+@keyframes cro-glow-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(0,0,0,.3),   0 2px 8px rgba(0,0,0,.2); }
+    45%  { box-shadow: 0 0 0 8px rgba(0,0,0,0),  0 4px 18px rgba(0,0,0,.3); }
+    100% { box-shadow: 0 0 0 0 rgba(0,0,0,0),    0 2px 8px rgba(0,0,0,.2); }
+}
+
+/* ─── 2. HEADER-TOP no mobile ─────────────────────────────────────── */
+/* .header-top só mostra algo em telas >=768px (telefone/redes ficam com
+   .hidden-xs); no mobile só sobra um carrossel promocional que nunca
+   inicializa (texto branco sobre fundo branco) — 45px de espaço vazio
+   no topo da página. Como não há nada visível ali no mobile mesmo, tira
+   a faixa inteira. */
+@media (max-width: 767px) {
+    .header-top { display: none !important; }
+}
+
+/* ─── 3. FOOTER — badges de confiança (Compra Segura, Entrega...) ──── */
+/* O tema original espalha essas 4 regras em vários breakpoints conflitantes
+   (icone ora flutua à direita, ora fica embaixo do texto). Reorganiza tudo
+   num grid simples: ícone num círculo no topo, título e descrição centrados. */
+.service-banner-style01.row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 28px !important;
+    padding: 10px 0 !important;
+}
+
+.service-banner-style01 .item {
+    width: calc(25% - 21px) !important;
+    min-width: 180px;
+    max-width: 260px;
+    float: none !important;
+    margin: 0 !important;
+}
+
+.service-banner-style01 .item > a {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+    float: none !important;
+}
+
+.service-banner-style01 .item-icon {
+    order: -1;
+    float: none !important;
+    width: 52px !important;
+    height: 52px !important;
+    min-width: 52px !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px !important;
+    background: #1a1a1a;
+    color: #fff;
+    border-radius: 50%;
+}
+
+.service-banner-style01 .item-content {
+    width: 100% !important;
+    text-align: center !important;
+    float: none !important;
+    letter-spacing: normal;
+}
+
+.service-banner-style01 .item-content strong {
+    display: block;
+    font-size: 13px;
+    line-height: 1.35;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+    min-height: 2.7em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #111;
+}
+
+.service-banner-style01 .item-content > p {
+    font-size: 12px !important;
+    font-style: normal !important;
+    color: #777;
+    width: 100% !important;
+    margin: 0 auto !important;
+    line-height: 1.45;
+}
+
+@media (max-width: 767px) {
+    .service-banner-style01 .item { width: calc(50% - 14px) !important; }
+}
+
+/* ─── 4. RESPIRO entre o header e o conteúdo da página de produto ──── */
+.product-main-top {
+    padding-top: 24px !important;
+}
+
+/* ─── 5. PRICE BOX — De / Por com preço riscado ─────────────────── */
+.product-info-price .price-box {
+    display: flex !important;
+    align-items: baseline !important;
+    flex-wrap: wrap !important;
+    gap: 12px !important;
+    margin: 14px 0 10px !important;
+}
+
+.product-info-price .price-box .old-price {
+    display: inline-flex !important;
+    align-items: baseline !important;
+    margin: 0 !important;
+    gap: 6px !important;
+    text-decoration: none !important;
+}
+
+.product-info-price .price-box .old-price .price-container {
+    display: inline-flex !important;
+    align-items: baseline !important;
+    gap: 5px !important;
+    text-decoration: none !important;
+}
+
+.product-info-price .price-box .old-price .price-label {
+    display: inline-block !important;
+    font-size: 15px !important;
+    color: #888 !important;
+    font-weight: 400 !important;
+    margin: 0 !important;
+    text-decoration: none !important;
+}
+
+.product-info-price .price-box .old-price .price-label:after {
+    display: none !important;
+    content: '' !important;
+}
+
+.product-info-price .price-box .old-price .price-wrapper.custom,
+.product-info-price .price-box .old-price .price,
+.product-info-price .price-box .old-price .price.old-price {
+    font-size: 18px !important;
+    color: #888 !important;
+    text-decoration: line-through !important;
+    font-weight: 400 !important;
+    display: inline-flex !important;
+    gap: 2px !important;
+    align-items: baseline !important;
+    line-height: normal !important;
+}
+
+.product-info-price .price-box .old-price .price:before {
+    display: none !important;
+}
+
+.product-info-price .price-box .old-price .price .currency-symbol {
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    color: #888 !important;
+    text-decoration: line-through !important;
+}
+
+.product-info-price .price-box .old-price .price .price-integer {
+    font-size: 18px !important;
+    font-weight: 500 !important;
+    color: #888 !important;
+    padding-left: 0 !important;
+    text-decoration: line-through !important;
+}
+
+.product-info-price .price-box .old-price .price .price-decimal {
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    color: #888 !important;
+    display: inline !important;
+    text-decoration: line-through !important;
+}
+
+.product-info-price .price-box .special-price {
+    display: inline-flex !important;
+    align-items: baseline !important;
+    margin: 0 !important;
+    gap: 6px !important;
+    text-decoration: none !important;
+}
+
+.product-info-price .price-box .special-price .price-container {
+    display: inline-flex !important;
+    align-items: baseline !important;
+    gap: 5px !important;
+    text-decoration: none !important;
+}
+
+.product-info-price .price-box .special-price .price-label {
+    display: inline-block !important;
+    font-size: 15px !important;
+    color: #222 !important;
+    font-weight: 500 !important;
+    margin: 0 !important;
+}
+
+.product-info-price .price-box .special-price .price-label:after {
+    display: none !important;
+    content: '' !important;
+}
+
+.product-info-price .price-box .special-price .price-wrapper.custom .price {
+    font-size: 32px !important;
+    font-weight: 700 !important;
+    color: #000 !important;
+    line-height: 1 !important;
+    display: inline-flex !important;
+    align-items: baseline !important;
+    gap: 2px !important;
+}
+
+.product-info-price .price-box .special-price .price .currency-symbol {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: #000 !important;
+    margin-right: 2px !important;
+}
+
+.product-info-price .price-box .special-price .price .price-integer {
+    font-size: 34px !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    color: #000 !important;
+}
+
+.product-info-price .price-box .special-price .price .price-decimal {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    align-self: flex-start !important;
+    color: #000 !important;
+}
+
+.product-info-price .price-box .discount-tag {
+    display: inline-flex !important;
+    align-items: center !important;
+    background: #000 !important;
+    color: #fff !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    padding: 3px 8px !important;
+    border-radius: 4px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    align-self: center !important;
+}
+
+/* ─── 6. MODO DE USO RESPONSIVO E ORGANIZADO ─────────────────────── */
+.cro-modo-uso {
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.55;
+    color: #333;
+    padding: 4px 0;
+}
+
+.cro-routine-block {
+    background: #fafafa;
+    border: 1px solid #ebebeb;
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin: 10px 0 14px;
+}
+
+.cro-routine-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.cro-routine-label {
+    font-weight: 700;
+    font-size: 13px;
+    color: #111;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 75px;
+    padding-top: 3px;
+}
+
+.cro-routine-steps {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 6px;
+    flex: 1;
+}
+
+.cro-step-pill {
+    display: inline-flex;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #111;
+    white-space: nowrap;
+}
+
+.cro-step-arrow {
+    color: #888;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.cro-modo-uso-divider {
+    border: 0;
+    border-top: 1px solid #eaeaea;
+    margin: 14px 0;
+}
+
+.cro-product-usage-item {
+    margin-bottom: 12px;
+}
+
+.cro-product-usage-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 6px;
+    line-height: 1.35;
+}
+
+.cro-product-usage-line {
+    font-size: 13px;
+    color: #333;
+    margin-bottom: 6px;
+    padding-left: 18px;
+    position: relative;
+    line-height: 1.5;
+}
+
+.cro-product-usage-line:before {
+    content: "»";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #111;
+    font-weight: 700;
+}
+
+.cro-product-usage-line strong {
+    color: #000;
+}
+
+/* ─── 7. KIT CONTENTS HIGHLIGHT STRIP (logo abaixo do H1) ─────────── */
+.cro-kit-highlights {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 8px 0 14px;
+}
+
+.cro-kit-highlights .cro-step-pill {
+    font-size: 11px;
+    padding: 4px 9px;
+}
+
+.cro-kit-highlights .cro-step-pill--gift {
+    background: #f5f5f5;
+    border-style: dashed;
+    color: #555;
+    font-weight: 600;
+}
+
+/* ─── 8. NOTA DE ECONOMIA — reforça o valor abaixo do preço ──────── */
+.cro-savings-note {
+    font-size: 13px;
+    color: #2f6b3a;
+    font-weight: 600;
+    margin: -4px 0 8px;
+}
+
+/* ─── 9. BARRA FIXA DE COMPRA (mobile) ───────────────────────────── */
+.cro-sticky-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: #fff;
+    border-top: 1px solid #e2e2e2;
+    box-shadow: 0 -4px 16px rgba(0,0,0,.08);
+    padding: 10px 14px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+    transform: translateY(100%);
+    transition: transform .25s ease;
+}
+
+@media (max-width: 767px) {
+    .cro-sticky-bar {
+        display: flex;
+    }
+}
+
+.cro-sticky-bar.is-visible {
+    transform: translateY(0);
+}
+
+.cro-sticky-bar-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.cro-sticky-bar-name {
+    font-size: 11px;
+    color: #777;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cro-sticky-bar-price {
+    font-size: 17px;
+    font-weight: 800;
+    color: #000;
+}
+
+.cro-sticky-bar-btn {
+    flex-shrink: 0;
+    background: #000;
+    color: #fff;
+    border: 0;
+    border-radius: 6px;
+    padding: 12px 22px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: .3px;
+    cursor: pointer;
+}
+
+.cro-sticky-bar-btn:active {
+    background: #1a1a1a;
+}
+
+
+
+
+

@@ -1,0 +1,16 @@
+{
+  "name": "principia-checkout",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Site PRINCIPIA com checkout PIX integrado via SigiloPay",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node --watch server/server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "qrcode": "^1.5.4"
+  }
+}
