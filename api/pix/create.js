@@ -36,6 +36,11 @@ module.exports = async (req, res) => {
       document: client.document,
     };
 
+    // A SigiloPay conta cada callbackUrl enviada como um webhook novo registrado na conta
+    // (tem um teto de 20) e não desfaz o registro depois. Uma URL só de query string por
+    // pedido (como era antes) esgota essa cota rapidinho. Por isso a callbackUrl agora é
+    // sempre a MESMA string fixa — o pedido inteiro (cliente, tracking, ids do Meta) viaja
+    // dentro de "metadata", que a SigiloPay ecoa de volta no corpo do webhook.
     const payload = {
       identifier,
       amount,
@@ -43,6 +48,16 @@ module.exports = async (req, res) => {
       metadata: {
         provider: 'Checkout',
         orderId: identifier,
+        name: customer.name,
+        email: customer.email,
+        phone: customer.phone || '',
+        createdAt,
+        tracking: trackingData,
+        meta_event_id: metaData.eventId ? String(metaData.eventId) : '',
+        meta_fbp: metaData.fbp ? String(metaData.fbp) : '',
+        meta_fbc: metaData.fbc ? String(metaData.fbc) : '',
+        meta_ua: req.headers['user-agent'] || '',
+        meta_ip: getClientIp(req) || '',
       },
     };
 
@@ -57,29 +72,9 @@ module.exports = async (req, res) => {
     // anti-SSRF). Só envie o webhook quando o servidor tiver uma URL pública real; em
     // dev local o frontend já confirma o pagamento via polling em /api/pix/status, mas
     // sem o webhook a venda aprovada não é reportada à UTMify/Meta CAPI.
-    //
-    // As functions da Vercel não têm estado entre chamadas, então o pedido inteiro
-    // (cliente, tracking de UTM, ids do Meta) viaja na própria querystring do callback
-    // para o webhook saber o que reportar quando o pagamento confirmar.
     const publicBaseUrl = process.env.PUBLIC_BASE_URL;
     if (publicBaseUrl && !/localhost|127\.0\.0\.1/i.test(publicBaseUrl)) {
-      const webhookParams = new URLSearchParams({
-        orderId: identifier,
-        name: customer.name,
-        email: customer.email,
-        phone: customer.phone || '',
-        amount: String(amount),
-        createdAt,
-      });
-      Object.entries(trackingData).forEach(([key, value]) => {
-        if (value) webhookParams.set(key, String(value));
-      });
-      if (metaData.eventId) webhookParams.set('meta_event_id', String(metaData.eventId));
-      if (metaData.fbp) webhookParams.set('meta_fbp', String(metaData.fbp));
-      if (metaData.fbc) webhookParams.set('meta_fbc', String(metaData.fbc));
-      webhookParams.set('meta_ua', req.headers['user-agent'] || '');
-      webhookParams.set('meta_ip', getClientIp(req) || '');
-      payload.callbackUrl = `${publicBaseUrl}/api/pix/webhook?${webhookParams.toString()}`;
+      payload.callbackUrl = `${publicBaseUrl}/api/pix/webhook`;
     }
 
     if (Array.isArray(products) && products.length > 0) {
