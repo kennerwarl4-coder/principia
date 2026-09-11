@@ -7,6 +7,7 @@ const zlib = require('node:zlib');
 const createHandler = require('../api/pix/create');
 const statusHandler = require('../api/pix/status/[id]');
 const webhookHandler = require('../api/pix/webhook');
+const confirmHandler = require('../api/pix/confirm');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -92,6 +93,7 @@ app.get('/api/pix/status/:id', (req, res) => {
   return statusHandler(req, res);
 });
 app.post('/api/pix/webhook', webhookHandler);
+app.post('/api/pix/confirm', confirmHandler);
 
 // ─── Static files ─────────────────────────────────────────────────────────────
 app.use(express.static(SITE_ROOT, {

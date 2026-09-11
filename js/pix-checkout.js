@@ -294,7 +294,57 @@
 
     var pollTimer = null;
     var currentTransactionId = null;
+    var currentOrderId = null;
     var checkNowBtn = document.getElementById('pix-check-now-btn');
+
+    // Reforça, do lado do servidor, que o pagamento foi confirmado (ele reconsulta a
+    // SigiloPay antes de reportar qualquer coisa — nunca confia só no que o navegador diz).
+    // Cobre o caso do webhook estar desativado (ver comentário em create.js) enquanto o
+    // cliente ainda está na tela. Depois redireciona pra página de obrigado, que tenta a
+    // mesma confirmação de novo (com o eventId salvo) caso essa chamada não complete a
+    // tempo do cliente sair da página.
+    function confirmAndRedirect(transactionId, amount) {
+      var orderPayload = {
+        transactionId: transactionId,
+        orderId: currentOrderId,
+        name: fields1.name.value.trim(),
+        email: fields1.email.value.trim(),
+        phone: fields1.phone.value.trim(),
+        tracking: typeof window.principiaGetTracking === 'function' ? window.principiaGetTracking() : {},
+        amount: amount,
+        eventId: currentEventId,
+        fbp: getCookie('_fbp'),
+        fbc: getCookie('_fbc'),
+      };
+
+      fetch('/api/pix/confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderPayload),
+      }).catch(function () { /* a página de obrigado tenta de novo */ });
+
+      try {
+        var products = getProducts();
+        sessionStorage.setItem('principia_last_order', JSON.stringify({
+          transactionId: transactionId,
+          orderId: currentOrderId,
+          name: orderPayload.name,
+          email: orderPayload.email,
+          phone: orderPayload.phone,
+          tracking: orderPayload.tracking,
+          amount: amount,
+          eventId: currentEventId,
+          fbp: orderPayload.fbp,
+          fbc: orderPayload.fbc,
+          productName: products.length ? products[0].name : null,
+          productId: products.length ? products[0].id : null,
+        }));
+      } catch (e) { /* sessionStorage indisponível — a página de obrigado só não mostra o resumo */ }
+
+      setTimeout(function () {
+        window.location.href = 'obrigado.html';
+      }, 1500);
+    }
 
     function stopPolling() {
       if (pollTimer) {
@@ -325,6 +375,7 @@
                 contents: getProducts().map(function (p) { return { id: p.id, quantity: p.quantity }; }),
                 content_type: 'product',
               }, currentEventId);
+              confirmAndRedirect(transactionId, getTotalAmount());
             }
             stopPolling();
           } else if (data.status === 'FAILED' || data.status === 'REFUNDED' || data.status === 'CHARGED_BACK') {
@@ -401,12 +452,22 @@
         })
         .then(function (data) {
           pixGenerated = true;
+          currentOrderId = data.identifier;
           qrImage.src = data.pix.qrImage;
           copyInput.value = data.pix.code;
           resultEl.hidden = false;
           setStatus('Aguardando pagamento…');
           ctaLabel.textContent = 'Aguardando pagamento…';
           enterPixFocusMode(amount);
+          // Sinal de intenção de compra forte (QR do Pix gerado, só falta pagar) — sem isso
+          // o Meta não tinha nenhum evento entre "Iniciar Checkout" e "Compra", o que
+          // enfraquece a otimização de anúncios e o funil de conversão no Gerenciador.
+          trackPixelEvent('AddPaymentInfo', {
+            value: amount,
+            currency: 'BRL',
+            contents: getProducts().map(function (p) { return { id: p.id, quantity: p.quantity }; }),
+            content_type: 'product',
+          });
           pollStatus(data.transactionId);
         })
         .catch(function (error) {

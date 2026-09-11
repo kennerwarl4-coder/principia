@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="NOINDEX, FOLLOW">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+<title>Pedido confirmado - PRINCIPIA</title>
+<meta http-equiv="content-security-policy" content="default-src 'self'; font-src 'self' data:; img-src 'self' data: https://www.facebook.com https://connect.facebook.net; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' data: https://connect.facebook.net; connect-src 'self' https://www.facebook.com https://connect.facebook.net https://*.ecs.us-west-2.on.aws; object-src 'self' data:; frame-src 'self' data: https://www.facebook.com;">
+<link rel="icon" type="image/x-icon" href="../images/favicon.jpg">
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '843769322065145');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=843769322065145&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+<style>
+  body{margin:0;font-family:"Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;color:#1a1a1a;background:#fafafa}
+  .obg{max-width:520px;margin:0 auto;padding:48px 20px;text-align:center}
+  .obg-check{width:64px;height:64px;border-radius:50%;background:#0c6b76;display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+  .obg-check svg{width:32px;height:32px}
+  .obg h1{font-size:22px;margin:0 0 10px}
+  .obg p{font-size:14px;color:#555;line-height:1.6;margin:0 0 4px}
+  .obg-order{margin:28px 0;padding:18px 20px;background:#fff;border:1px solid #e3e3e3;border-radius:10px;text-align:left}
+  .obg-order-row{display:flex;justify-content:space-between;font-size:13px;padding:4px 0}
+  .obg-order-row dt{color:#777;font-weight:400;margin:0}
+  .obg-order-row dd{margin:0;font-weight:600}
+  .obg-back{display:inline-block;margin-top:12px;padding:12px 24px;background:#000;color:#fff;text-decoration:none;border-radius:6px;font-size:14px;font-weight:700}
+  .obg-generic{display:none}
+</style>
+</head>
+<body>
+<div class="obg" id="obg-root">
+  <div class="obg-check" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+  <h1>Pedido confirmado!</h1>
+  <p>Seu pagamento foi aprovado. Em breve você recebe os detalhes por e-mail.</p>
+
+  <dl class="obg-order" id="obg-order" hidden>
+    <div class="obg-order-row"><dt>Pedido</dt><dd id="obg-order-name"></dd></div>
+    <div class="obg-order-row"><dt>Valor</dt><dd id="obg-order-amount"></dd></div>
+  </dl>
+
+  <a class="obg-back" href="../">Voltar para a loja</a>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var STORAGE_KEY = 'principia_last_order';
+  var raw = null;
+  try { raw = sessionStorage.getItem(STORAGE_KEY); } catch (e) {}
+  var order = null;
+  try { order = raw ? JSON.parse(raw) : null; } catch (e) {}
+
+  function formatBRL(amount) {
+    return 'R$ ' + Number(amount).toFixed(2).replace('.', ',');
+  }
+
+  if (order && order.amount) {
+    var orderEl = document.getElementById('obg-order');
+    var nameEl = document.getElementById('obg-order-name');
+    var amountEl = document.getElementById('obg-order-amount');
+    if (orderEl) orderEl.hidden = false;
+    if (nameEl) nameEl.textContent = order.productName || 'Kit Rotina Anti Melasma';
+    if (amountEl) amountEl.textContent = formatBRL(order.amount);
+
+    // Dispara o Purchase no navegador com o MESMO eventId usado na checagem server-side
+    // (em /api/pix/confirm) — a Meta deduplica os dois pelo eventID, então não conta a
+    // venda em dobro, só melhora a qualidade do casamento do evento.
+    if (typeof window.fbq === 'function') {
+      var params = {
+        value: order.amount,
+        currency: 'BRL',
+        content_type: 'product',
+      };
+      if (order.productId) params.contents = [{ id: order.productId, quantity: 1 }];
+      if (order.eventId) window.fbq('track', 'Purchase', params, { eventID: order.eventId });
+      else window.fbq('track', 'Purchase', params);
+    }
+
+    // Reforça a confirmação do lado do servidor (idempotente — a SigiloPay é reconsultada
+    // antes de reportar qualquer coisa) caso a checagem feita na própria tela de checkout
+    // não tenha rodado a tempo (ex.: o cliente foi redirecionado assim que o status mudou).
+    if (order.transactionId) {
+      fetch('/api/pix/confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(order),
+      }).catch(function () { /* melhor esforço — a tela de checkout já tentou isso também */ });
+    }
+
+    try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) {}
+  }
+})();
+</script>
+</body>
+</html>

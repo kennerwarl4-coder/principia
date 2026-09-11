@@ -1,5 +1,4 @@
-const { reportOrder, buildOrderPayload } = require('../_lib/utmify');
-const { sendPurchaseEvent } = require('../_lib/meta-capi');
+const { reportPurchase } = require('../_lib/report-purchase');
 
 const PAID_STATUSES = new Set(['COMPLETED', 'PAID', 'paid', 'completed']);
 
@@ -33,32 +32,21 @@ module.exports = async (req, res) => {
     const amount = body.amount || queryFallback.amount;
 
     if (orderId && amount && PAID_STATUSES.has(status)) {
-      const approvedDate = new Date().toISOString();
-      const numericAmount = Number(amount);
-
-      await Promise.all([
-        reportOrder(buildOrderPayload({
-          orderId,
-          status: 'paid',
-          createdAt: createdAt || approvedDate,
-          approvedDate,
-          customer: { name, email, phone },
-          amount: numericAmount,
-          tracking,
-        })),
-        sendPurchaseEvent({
-          eventId,
-          value: numericAmount,
-          currency: 'BRL',
-          email,
-          phone,
-          fbp,
-          fbc,
-          clientIp,
-          userAgent,
-          eventSourceUrl: `${process.env.PUBLIC_BASE_URL || ''}/checkout/`,
-        }),
-      ]);
+      await reportPurchase({
+        orderId,
+        name,
+        email,
+        phone,
+        createdAt,
+        tracking,
+        amount,
+        eventId,
+        fbp,
+        fbc,
+        clientIp,
+        userAgent,
+        eventSourceUrl: `${process.env.PUBLIC_BASE_URL || ''}/checkout/`,
+      });
     }
   } catch (error) {
     console.error('[webhook] Erro ao processar callback:', error.message);
