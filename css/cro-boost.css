@@ -676,6 +676,64 @@ button.action.primary.tocart.cro-pulse,
     flex: 1 1 auto;
 }
 
+/* ─── 16. BOLHA DO CARRINHO PISCANDO NO PRIMEIRO CARREGAMENTO ────────
+   O contador do carrinho (sempre com a classe "empty" nesta versão
+   estática, já que o carrinho de verdade nunca roda) só fica escondido
+   por uma regra que mora num CSS não-bloqueante (fc3700...css). Só que
+   o CSS que desenha a bolinha branca redonda por cima do ícone do
+   carrinho mora em OUTRO CSS não-bloqueante (header-styles.css) — se
+   esse carregar primeiro, a bolha aparece vazia por um instante antes
+   de sumir. Escondendo aqui, no CSS crítico (bloqueante), ela nunca
+   chega a aparecer. */
+.showcart .counter.qty.empty,
+.counter.qty.empty {
+    display: none !important;
+}
+
+/* ─── 17. ÍCONE DE CARRINHO NO CANTO DIREITO DO HEADER (mobile) ──────
+   Esse espaço era ocupado pela busca (praticamente inútil numa página
+   de produto único e, sem o CSS do tema, renderizava como um quadrado
+   vazio). Troca pelo ícone de carrinho — sempre leva pro checkout,
+   preservando o rastreamento de campanha (ver script no fim do body). */
+@media (max-width: 767px) {
+    /* O ícone de carrinho (#mobi_cart-wrapper) mora DENTRO do próprio
+       .header-search-wrap no HTML — por isso escondemos só o widget de
+       busca (.block-search), não o container inteiro. */
+    .header-search-wrap .block.block-search {
+        display: none !important;
+    }
+
+    .header-search-wrap {
+        display: flex !important;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    #mobi_cart-wrapper.mobi-cart-wrapper {
+        position: static !important;
+        display: flex !important;
+        align-items: center;
+        justify-content: flex-end;
+        height: 100%;
+        width: auto !important;
+    }
+}
+
+.cro-mobile-cart-link {
+    display: none;
+}
+
+@media (max-width: 767px) {
+    .cro-mobile-cart-link {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        color: #fff;
+    }
+}
+
 
 
 
