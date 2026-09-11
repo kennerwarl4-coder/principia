@@ -68,12 +68,18 @@ module.exports = async (req, res) => {
       payload.shippingFee = Number(shippingFee);
     }
 
-    // A SigiloPay rejeita callbackUrl apontando para localhost/rede interna (proteção
-    // anti-SSRF). Só envie o webhook quando o servidor tiver uma URL pública real; em
-    // dev local o frontend já confirma o pagamento via polling em /api/pix/status, mas
-    // sem o webhook a venda aprovada não é reportada à UTMify/Meta CAPI.
+    // DESATIVADO TEMPORARIAMENTE: a conta da SigiloPay bateu no limite de "20 webhooks"
+    // (cada callbackUrl enviada vira um webhook novo registrado, sem endpoint de API nem
+    // tela no painel pra apagar os antigos) — enquanto o suporte da SigiloPay não libera a
+    // cota, NÃO envie callbackUrl, senão toda cobrança PIX é recusada com 400.
+    // O pagamento ainda é confirmado normalmente pro cliente via polling em /api/pix/status,
+    // e o pixel do navegador ainda dispara o Purchase sozinho — só ficam de fora, enquanto
+    // isso durar: o status "pago" reportado à UTMify e a chamada redundante do Meta CAPI
+    // server-side (webhook.js). Pra reativar depois que a SigiloPay resolver, defina
+    // SIGILOPAY_ENABLE_CALLBACK=true nas variáveis de ambiente.
     const publicBaseUrl = process.env.PUBLIC_BASE_URL;
-    if (publicBaseUrl && !/localhost|127\.0\.0\.1/i.test(publicBaseUrl)) {
+    const callbackEnabled = process.env.SIGILOPAY_ENABLE_CALLBACK === 'true';
+    if (callbackEnabled && publicBaseUrl && !/localhost|127\.0\.0\.1/i.test(publicBaseUrl)) {
       payload.callbackUrl = `${publicBaseUrl}/api/pix/webhook`;
     }
 
