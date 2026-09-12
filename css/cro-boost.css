@@ -18,13 +18,26 @@ button.action.primary.tocart.cro-pulse,
 }
 
 /* ─── 2. HEADER-TOP no mobile ─────────────────────────────────────── */
-/* .header-top só mostra algo em telas >=768px (telefone/redes ficam com
-   .hidden-xs); no mobile só sobra um carrossel promocional que nunca
-   inicializa (texto branco sobre fundo branco) — 45px de espaço vazio
-   no topo da página. Como não há nada visível ali no mobile mesmo, tira
-   a faixa inteira. */
+/* O tema esconde .header-top inteiro no mobile por padrão (regra própria dele,
+   .page-header .header-top{display:none} em @media max-width:767px) — precisa
+   de !important pra vencer. Contato e redes sociais (colunas com .hidden-xs)
+   continuam escondidos; só a faixa "Frete grátis" (cro-header-promo, sempre
+   visível e sem depender de carrossel) deve aparecer. */
 @media (max-width: 767px) {
-    .header-top { display: none !important; }
+    .page-header .header-top {
+        display: block !important;
+        padding: 0 !important;
+    }
+    .header-top .store-info-top.container,
+    .header-top .row {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .header-top .col-sm-8 {
+        width: 100% !important;
+        padding: 0 !important;
+        float: none !important;
+    }
 }
 
 /* ─── 3. FOOTER — badges de confiança (Compra Segura, Entrega...) ──── */
