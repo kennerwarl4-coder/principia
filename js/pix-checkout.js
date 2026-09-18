@@ -13,7 +13,15 @@
     return match ? decodeURIComponent(match[1]) : '';
   }
 
-  var SUBTOTAL = 137.9;
+  // Kits vendidos por este checkout. A página do produto manda ?kit=<chave>; sem o
+  // parâmetro (ou com um valor desconhecido) vale o kit "completo".
+  var KITS = {
+    completo: { id: '2', name: 'Kit Anti-Manchas Avançado GH + AM + NC', price: 147.9 },
+  };
+  var kitKey = new URLSearchParams(window.location.search).get('kit');
+  var KIT = Object.prototype.hasOwnProperty.call(KITS, kitKey) ? KITS[kitKey] : KITS.completo;
+
+  var SUBTOTAL = KIT.price;
   var SHIPPING_COSTS = { free: 0, express: 27.9 };
 
   function formatBRL(amount) {
@@ -34,9 +42,7 @@
   }
 
   function getProducts() {
-    var nameEl = document.querySelector('.pchk-cart-name');
-    if (!nameEl) return [];
-    return [{ id: '1', name: nameEl.textContent.trim(), quantity: 1, price: SUBTOTAL }];
+    return [{ id: KIT.id, name: KIT.name, quantity: 1, price: SUBTOTAL }];
   }
 
   function updateTotalsDisplay() {
@@ -92,6 +98,11 @@
   document.addEventListener('DOMContentLoaded', function () {
     var app = document.querySelector('.pchk');
     if (!app) return;
+
+    var cartNameEl = document.querySelector('.pchk-cart-name');
+    if (cartNameEl) cartNameEl.textContent = KIT.name;
+    var cartImgEl = document.querySelector('.pchk-cart-img');
+    if (cartImgEl) cartImgEl.alt = KIT.name;
 
     trackPixelEvent('InitiateCheckout', {
       value: getTotalAmount(),
@@ -315,6 +326,8 @@
         eventId: currentEventId,
         fbp: getCookie('_fbp'),
         fbc: getCookie('_fbc'),
+        productId: KIT.id,
+        productName: KIT.name,
       };
 
       fetch('/api/pix/confirm', {

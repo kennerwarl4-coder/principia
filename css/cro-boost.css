@@ -490,3 +490,266 @@ button.action.primary.tocart.cro-pulse,
 
 
 
+
+/* ─── 5. BLOCO ESTOQUE + PREÇO + PARCELAS (ficha do produto) ──────── */
+/* "Em Estoque" verde com ícone à esquerda, preço com centavos sobrescritos
+   e parcelas em cinza com o valor em negrito. Os !important vencem o CSS do
+   tema, que carrega depois deste arquivo. */
+body.catalog-product-view .product-info-main .product-info-stock-sku {
+    display: block !important;
+    width: auto !important;
+    padding-left: 0 !important;
+    margin: 0 0 14px !important;
+}
+body.catalog-product-view .product-info-main .product-info-stock-sku .stock.available {
+    position: static !important;
+    transform: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 6px !important;
+    color: #3cae4c !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+}
+body.catalog-product-view .product-info-main .product-info-stock-sku .stock.available:before {
+    display: none !important;
+}
+.stock.available .cro-stock-icon {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+    display: block;
+}
+body.catalog-product-view .product-info-main .price-box .price-wrapper.custom .price {
+    display: inline-flex !important;
+    align-items: baseline !important;
+    gap: 4px !important;
+    color: #000 !important;
+}
+body.catalog-product-view .product-info-main .price-box .price-wrapper.custom .price .currency-symbol {
+    align-self: auto !important;
+    font-size: 22px !important;
+    font-weight: 400 !important;
+}
+body.catalog-product-view .product-info-main .price-box .price-wrapper.custom .price .price-integer {
+    height: auto !important;
+    align-content: normal !important;
+    font-size: 42px !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+}
+body.catalog-product-view .product-info-main .price-box .price-wrapper.custom .price .price-decimal {
+    align-self: flex-start !important;
+    height: auto !important;
+    margin-top: 2px !important;
+    font-size: 20px !important;
+    font-weight: 400 !important;
+    line-height: 1 !important;
+}
+body.catalog-product-view .product-info-main .installments-price {
+    margin-top: 6px !important;
+    font-size: 17px !important;
+    line-height: 1.3 !important;
+    color: #555 !important;
+}
+body.catalog-product-view .product-info-main .installments-price strong {
+    font-weight: 700 !important;
+    color: #333 !important;
+}
+
+/* Ficha: garante que o preço apareça embaixo do "Em Estoque" (o tema deixava
+   o bloco de preço numa coluna de largura 0 ao lado do estoque). */
+body.catalog-product-view .product-info-main .product-info-price {
+    display: block !important;
+}
+body.catalog-product-view .product-info-main .product-info-price .price-box {
+    display: block !important;
+    width: auto !important;
+    overflow: visible !important;
+    margin: 0 !important;
+}
+
+/* ─── 6. HEADER MOBILE — lupa + carrinho com contador à direita ───── */
+.cro-hdr-icons { display: none; }
+@media (max-width: 767px) {
+    .page-header .header-panel-right {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+    }
+    .cro-hdr-icons {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding-right: 12px;
+    }
+    .cro-hdr-btn {
+        position: relative;
+        width: 34px;
+        height: 34px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    .cro-hdr-btn svg { width: 20px; height: 20px; display: block; }
+    .cro-hdr-cart svg { width: 26px; height: 22px; }
+    .cro-hdr-badge {
+        position: absolute;
+        top: 0;
+        right: -2px;
+        min-width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: #fff;
+        color: #000;
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 15px;
+        text-align: center;
+    }
+}
+@media (max-width: 767px) {
+    .cro-hdr-icons { margin-top: 11px; }
+    /* A caixa de busca do tema deixava um ícone quebrado ao lado do carrinho */
+    .page-header .header-panel-bottom .header-search-wrap { display: none !important; }
+}
+
+/* ─── 7. SEÇÕES DA FICHA (Indicações / Comprovações) e RODAPÉ no celular ─ */
+/* Indicações: marcador "»" no lugar do quadradinho do ícone-fonte do tema */
+.product.info.detailed #principais_indicacoes_check .additional-attributes.border-none th:before {
+    font-family: inherit !important;
+    content: '»' !important;
+    font-size: inherit !important;
+    font-weight: 400 !important;
+    margin-right: 4px !important;
+    vertical-align: baseline !important;
+}
+
+/* Comprovações: texto cortado com degradê e link "ver mais" / "ver menos" */
+.cro-more-wrap { position: relative; }
+.cro-more-wrap.is-clamped > .product.attribute {
+    max-height: 340px;
+    overflow: hidden;
+}
+.cro-more-wrap.is-clamped:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, rgba(245,245,245,0), #f5f5f5 85%);
+    pointer-events: none;
+}
+.cro-more-btn {
+    display: block;
+    margin: 6px auto 4px;
+    padding: 6px 12px;
+    border: 0;
+    background: transparent;
+    color: #000;
+    font-size: 16px;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: normal;
+    text-decoration: underline;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+}
+.cro-more-wrap.is-clamped .cro-more-btn {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0 auto;
+    width: 110px;
+}
+
+/* Rodapé (celular): cada item em uma linha, texto à direita e ícone preto
+   à direita, sem o círculo escuro. */
+@media (max-width: 767px) {
+    .service-banner-style01.row {
+        display: block !important;
+        gap: 0 !important;
+        padding: 10px 20px !important;
+    }
+    .service-banner-style01 .item {
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        margin: 0 0 18px !important;
+        padding: 0 !important;
+    }
+    .service-banner-style01 .item > a {
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        text-align: right !important;
+        gap: 14px !important;
+    }
+    .service-banner-style01 .item-icon {
+        order: 0 !important;
+        width: 24px !important;
+        min-width: 24px !important;
+        height: auto !important;
+        background: transparent !important;
+        color: #111 !important;
+        border-radius: 0 !important;
+        font-size: 24px !important;
+    }
+    .service-banner-style01 .item-content {
+        width: auto !important;
+        flex: 1 1 auto;
+        text-align: right !important;
+    }
+    .service-banner-style01 .item-content strong {
+        justify-content: flex-end !important;
+        min-height: 0 !important;
+        font-size: 14px !important;
+        margin-bottom: 2px !important;
+    }
+    .service-banner-style01 .item-content > p {
+        margin: 0 !important;
+        font-size: 13px !important;
+        color: #1f2a44 !important;
+        text-align: right !important;
+    }
+}
+
+/* ─── 8. BOTÃO FLUTUANTE DO WHATSAPP ─────────────────────────────── */
+.cro-whats {
+    position: fixed;
+    left: 14px;
+    bottom: 14px;
+    z-index: 2147483000;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #25d366;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+    line-height: 1;
+    box-shadow: 0 3px 10px rgba(0,0,0,.3);
+}
+.cro-whats .fa { color: #fff; }
+
+/* Galeria: caixa de tamanho fixo (3:2) para a altura não pular ao passar entre
+   as fotos do kit (grandes) e as fotos dos frascos (pequenas). */
+.product.media .gallery-placeholder__image {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 3 / 2;
+    object-fit: contain;
+}

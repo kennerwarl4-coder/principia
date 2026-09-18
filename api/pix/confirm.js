@@ -15,7 +15,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { transactionId, orderId, name, email, phone, createdAt, tracking, amount, eventId, fbp, fbc } = req.body || {};
+    const { transactionId, orderId, name, email, phone, createdAt, tracking, amount, eventId, fbp, fbc, productId, productName } = req.body || {};
 
     if (!transactionId || typeof transactionId !== 'string') {
       res.status(400).json({ message: 'transactionId ausente.' });
@@ -44,6 +44,7 @@ module.exports = async (req, res) => {
       createdAt,
       tracking,
       amount: verifiedAmount,
+      product: productName ? { id: productId, name: productName } : undefined,
       eventId,
       fbp,
       fbc,

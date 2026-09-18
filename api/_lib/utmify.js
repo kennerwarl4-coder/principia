@@ -35,8 +35,14 @@ async function reportOrder(order) {
   }
 }
 
-function buildOrderPayload({ orderId, status, createdAt, approvedDate, customer, amount, tracking }) {
+const DEFAULT_PRODUCT = { id: '2', name: 'Kit Anti-Manchas Avançado GH + AM + NC' };
+
+function buildOrderPayload({ orderId, status, createdAt, approvedDate, customer, amount, tracking, product }) {
   const amountCents = Math.round(amount * 100);
+  const item = {
+    id: product && product.id ? String(product.id).slice(0, 50) : DEFAULT_PRODUCT.id,
+    name: product && product.name ? String(product.name).slice(0, 200) : DEFAULT_PRODUCT.name,
+  };
 
   return {
     orderId,
@@ -55,8 +61,8 @@ function buildOrderPayload({ orderId, status, createdAt, approvedDate, customer,
     },
     products: [
       {
-        id: '1',
-        name: 'Kit Rotina Anti Melasma',
+        id: item.id,
+        name: item.name,
         planId: null,
         planName: null,
         quantity: 1,

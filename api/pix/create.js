@@ -58,6 +58,8 @@ module.exports = async (req, res) => {
         meta_fbc: metaData.fbc ? String(metaData.fbc) : '',
         meta_ua: req.headers['user-agent'] || '',
         meta_ip: getClientIp(req) || '',
+        product_id: (Array.isArray(products) && products[0] && products[0].id) ? String(products[0].id) : '',
+        product_name: (Array.isArray(products) && products[0] && products[0].name) ? String(products[0].name).slice(0, 200) : '',
       },
     };
 
@@ -103,6 +105,7 @@ module.exports = async (req, res) => {
       customer,
       amount,
       tracking: trackingData,
+      product: payload.products && payload.products[0],
     }));
 
     res.status(201).json({

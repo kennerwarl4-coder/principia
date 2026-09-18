@@ -30,6 +30,7 @@ module.exports = async (req, res) => {
       ? metadata.tracking
       : queryFallback;
     const amount = body.amount || queryFallback.amount;
+    const product = metadata.product_name ? { id: metadata.product_id, name: metadata.product_name } : undefined;
 
     if (orderId && amount && PAID_STATUSES.has(status)) {
       await reportPurchase({
@@ -40,6 +41,7 @@ module.exports = async (req, res) => {
         createdAt,
         tracking,
         amount,
+        product,
         eventId,
         fbp,
         fbc,
